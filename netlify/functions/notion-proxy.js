@@ -1,53 +1,59 @@
 const { Client } = require('@notionhq/client');
 
 exports.handler = async (event) => {
-  try {
-    // 1. Initialize Notion client
-    const notion = new Client({ 
-      auth: process.env.NOTION_API_KEY 
-    });
+  // === NEW VALIDATION CHECKS ===
+  if (!process.env.DATABASE_ID) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        error: "Server misconfigured - DATABASE_ID missing",
+        solution: "Set DATABASE_ID in Netlify environment variables"
+      })
+    };
+  }
 
-    // 2. Get today's date (MMMM DD, YYYY)
+  if (!process.env.NOTION_API_KEY) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        error: "Server misconfigured - NOTION_API_KEY missing",
+        solution: "Set NOTION_API_KEY in Netlify environment variables"
+      })
+    };
+  }
+  // === END VALIDATION ===
+
+  try {
+    const notion = new Client({ auth: process.env.NOTION_API_KEY });
     const today = new Date().toISOString().split('T')[0];
 
-    // 3. Query Notion for today's entry
     const response = await notion.databases.query({
-      database_id: process.env.DATABASE_ID,
+      database_id: process.env.DATABASE_ID, // Now using env var
       filter: {
-        property: "Date", 
+        property: "Date",
         date: { equals: today }
       }
     });
 
-    // 4. Extract dropdown value (single-select)
     const staffName = response.results[0]?.properties?.Staff?.select?.name 
-      || "No staff scheduled today";
+      || "No staff scheduled";
 
-    // 5. Return success
     return {
       statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*", // Allow frontend calls
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ 
-        name: staffName,
-        debug: { // For testing (optional)
-          today: today,
-          totalResults: response.results.length
-        }
-      })
+      headers: { "Access-Control-Allow-Origin": "*" },
+      body: JSON.stringify({ name: staffName })
     };
 
   } catch (error) {
-    // 6. Detailed error response
     return {
       statusCode: 500,
-      headers: { "Access-Control-Allow-Origin": "*" },
       body: JSON.stringify({
-        error: "Failed to fetch staff data",
+        error: "Notion API error",
         details: error.message,
-        suggestion: "Check if: 1) Database is shared with integration, 2) Date column exists, 3) Staff is a single-select property"
+        debug: {
+          databaseId: process.env.DATABASE_ID ? "✅ Set" : "❌ Missing",
+          apiKey: process.env.NOTION_API_KEY ? "✅ Set" : "❌ Missing"
+        }
       })
     };
   }
