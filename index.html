@@ -3,62 +3,50 @@
 <head>
     <title>Notion Greeting Widget</title>
     <style>
-        .notion-greeting {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            padding: 20px;
-            border-radius: 8px;
-            background: #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            max-width: 400px;
-            margin: 0 auto;
+        body {
+            margin: 0;
+            padding: 0;
+            /* Using Notion's native Serif font stack */
+            font-family: "Source Serif Pro", ui-serif, Georgia, serif;
+            background: transparent !important;
+        }
+        #greeting-container {
+            padding: 12px 16px;
+            color: #3a1f04; /* Notion's default text color */
+            font-size: 16px;
+            line-height: 1.5;
+            /* Removed shadow and background */
+            background: transparent;
         }
         h2 {
             margin: 0;
-            color: #333;
+            font-weight: 600;
+            font-size: 1.1em;
         }
     </style>
 </head>
 <body>
-    <div class="notion-greeting" id="greeting-container">
-        Loading greeting...
+    <div id="greeting-container">
+        Loading...
     </div>
 
     <script>
-        // Only public values here
-        const DATABASE_ID = '1c44ef1e6cb580c8bcd5cd2133d35589';
-        const NAME_PROPERTY = 'Staff';
-        
         async function fetchData() {
             try {
-                // Updated with YOUR Netlify URL
-                const response = await fetch('https://sqrlgrl.netlify.app/.netlify/functions/notion-proxy', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        database_id: DATABASE_ID,
-                        name_property: NAME_PROPERTY
-                    })
-                });
-                
+                const response = await fetch('https://sqrlgrl.netlify.app/.netlify/functions/notion-proxy');
                 const data = await response.json();
                 
-                if (data.name) {
-                    document.getElementById('greeting-container').innerHTML = `
-                        <h2>Hi, ${data.name}! 🫶 </h2>
-                    `;
-                } else {
-                    throw new Error('No name found');
-                }
+                document.getElementById('greeting-container').innerHTML = `
+                    <h2>Hi, ${data.name}!
+                    <span style="font-weight:400;">🫶</span>
+                    </h2>
+                `;
             } catch (error) {
-                console.error('Error:', error);
                 document.getElementById('greeting-container').innerHTML = `
                     <h2>Hello there! 👋</h2>
                 `;
             }
         }
-        
         fetchData();
     </script>
 </body>
