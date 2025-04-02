@@ -36,7 +36,7 @@ exports.handler = async (event) => {
     });
 
     const staffName = response.results[0]?.properties?.Staff?.select?.name 
-      || "No staff scheduled";
+      || "QT Pie";
 
     return {
       statusCode: 200,
