@@ -30,7 +30,7 @@ exports.handler = async (event) => {
     const response = await notion.databases.query({
       database_id: process.env.DATABASE_ID, // Now using env var
       filter: {
-        property: "Date",
+        property: "Goal Date",
         date: { equals: today }
       }
     });
