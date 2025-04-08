@@ -4,28 +4,36 @@
     <title>Notion Greeting Widget</title>
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            /* Using Notion's native Serif font stack */
+            margin: 0 !important;
+            padding: 0 !important;
             font-family: "Source Serif Pro", ui-serif, Georgia, serif;
             background: transparent !important;
-            line-height: 1; /* Add this to prevent any line height spacing */
+            line-height: 1 !important;
+            overflow: hidden; /* Prevents any scrollbar space */
         }
         #greeting-container {
-            padding: 4px 4px 0; /* Changed to 0 padding at bottom */
-            color: #326400; /* Notion's default text color */
+            padding: 4px 4px 0 !important;
+            margin: 0 !important;
+            color: #326400;
             font-size: 24px;
-            line-height: 1;
-            /* Removed shadow and background */
+            line-height: 1 !important;
             background: transparent;
-            display: inline-block; /* Prevents container from adding extra space */
+            display: inline-block;
+            vertical-align: top; /* Fixes potential alignment spacing */
         }
         h2 {
-            margin: 0;
-            padding: 0; /* Added to ensure no padding */
+            margin: 0 !important;
+            padding: 0 !important;
             font-weight: 500;
             font-size: 1.3em;
-            line-height: 1; /* Explicitly set */
+            line-height: 1 !important;
+            display: inline; /* Removes block-level spacing */
+        }
+        /* Nuclear option for any remaining space */
+        html {
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 1 !important;
         }
     </style>
 </head>
@@ -41,9 +49,7 @@
                 const data = await response.json();
                 
                 document.getElementById('greeting-container').innerHTML = `
-                    <h2>Hi, ${data.name}!
-                    <span style="font-weight:500;"></span>
-                    </h2>
+                    <h2>Hi, ${data.name}!</h2>
                 `;
             } catch (error) {
                 document.getElementById('greeting-container').innerHTML = `
