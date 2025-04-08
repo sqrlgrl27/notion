@@ -9,19 +9,23 @@
             /* Using Notion's native Serif font stack */
             font-family: "Source Serif Pro", ui-serif, Georgia, serif;
             background: transparent !important;
+            line-height: 1; /* Add this to prevent any line height spacing */
         }
         #greeting-container {
-            padding: 4px 4px;
+            padding: 4px 4px 0; /* Changed to 0 padding at bottom */
             color: #326400; /* Notion's default text color */
             font-size: 24px;
             line-height: 1;
             /* Removed shadow and background */
             background: transparent;
+            display: inline-block; /* Prevents container from adding extra space */
         }
         h2 {
             margin: 0;
+            padding: 0; /* Added to ensure no padding */
             font-weight: 500;
             font-size: 1.3em;
+            line-height: 1; /* Explicitly set */
         }
     </style>
 </head>
